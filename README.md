@@ -20,19 +20,6 @@ You will need bash|powershell, terraform, azurecli and helm.
 
 ## Initial setup (very first run)
 
-### Clone projects
-Clone the projects from GitHub
-
-1) Clone Terraform project
-```bash
-git clone https://github.com/pltkrt/aks2jira.git
-```
-
-2) Clone Helm project
-```bash
-git clone https://github.com/pltkrt/jira.git
-```
-
 ### Prepare projects
 
 1) Create a Storage Account in Azure to store the tfstate by executing (.ps1 on windows, .sh on linux):
