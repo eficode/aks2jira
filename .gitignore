@@ -1,0 +1,38 @@
+# IDE
+.idea/
+
+### Secrets ###
+*.pem
+/ssh.cfg
+/secrets.sh
+
+### Terraform ###
+# Compiled files
+*.tfstate
+*.tfstate.backup
+*.tfstate.*.backup
+*.tfstate.lock.info
+
+# Module directory
+.terraform/
+
+# host.ini created by Terraform
+terraform/**/hosts.ini
+
+### Ansible ###
+*.retry
+
+### Secrets ###
+secrets.tf
+terraform/modules/db/secrets.tf
+terraform/modules/security/*/secrets.tf
+
+### Certs (folders allowed but no files within) ###
+certs/*/*
+
+### own yamls
+yaml/*
+.yamllint
+
+### temporary files
+.helmVars

@@ -1,0 +1,80 @@
+
+## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+##
+grafana:
+
+  adminPassword: JWDkkxoK6RIY3DFowU4hWAaifW96WA
+
+  ingress:
+    ## If true, Grafana Ingress will be created
+    ##
+    enabled: true
+
+    ## IngressClassName for Grafana Ingress.
+    ## Should be provided if Ingress is enable.
+    ##
+    ingressClassName: azure-application-gateway
+
+    ## Annotations for Grafana Ingress
+    ##
+    annotations: {
+      appgw.ingress.kubernetes.io/cookie-based-affinity: "true",
+      appgw.ingress.kubernetes.io/request-timeout: "210"
+    }
+
+    ## Labels to be added to the Ingress
+    ##
+    labels: {}
+
+    ## Hostnames.
+    ## Must be provided if Ingress is enable.
+    ##
+    hosts:
+       - grafana.mydomain.com
+
+    ## Path for grafana ingress
+    path: /
+
+    ## TLS configuration for grafana Ingress
+    ## Secret must be manually created in the namespace
+    ##
+    tls: []
+    # - secretName: grafana-general-tls
+    #   hosts:
+    #   - grafana.example.com
+
+
+
+
+## Deploy a Prometheus instance
+##
+prometheus:
+
+  ingress:
+    enabled: true
+
+    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+    ingressClassName: azure-application-gateway
+
+    annotations: {
+      appgw.ingress.kubernetes.io/cookie-based-affinity: "true",
+      appgw.ingress.kubernetes.io/request-timeout: "210"
+    }
+    
+    labels: {}
+
+    ## Redirect ingress to an additional defined port on the service
+    # servicePort: 8081
+
+    ## Hostnames.
+    ## Must be provided if Ingress is enabled.
+    ##
+    hosts:
+      - prometheus.mydomain.com
+
+
+    ## Paths to use for ingress rules - one path should match the prometheusSpec.routePrefix
+    ##
+    paths: [/]
+   

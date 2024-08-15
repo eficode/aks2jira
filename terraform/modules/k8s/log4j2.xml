@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="com.atlassian.logging.log4j,com.atlassian.jira.logging">
+    <Properties>
+        <Property name="StackTraceFilteringPattern">%d{yyyy-MM-dd HH:mm:ss,SSSZ} %t %p %X{jira.username} %X{jira.request.id} %X{jira.request.assession.id} %X{jira.request.ipaddr} %X{jira.request.url} [%q{2}] %nlm%n%stf{stackTracePackagingExamined(false)}{filteringApplied(true)}{filteredFrames(@jira-filtered-frames.properties)}</Property>
+        <Property name="NonFilteringPattern">%d{yyyy-MM-dd HH:mm:ss,SSSZ} %t %p %X{jira.username} %X{jira.request.id} %X{jira.request.assession.id} %X{jira.request.ipaddr} %X{jira.request.url} [%q{2}] %nlm%n%stf{filteringApplied(false)}</Property>
+        <Property name="NewLineIndentingNotFilteringPattern">%nlm%n%stf{filteringApplied(false)}</Property>
+        <Property name="NoLevelNonFilteringPattern">%d{yyyy-MM-dd HH:mm:ss,SSSZ} %t %X{jira.username} %X{jira.request.id} %X{jira.request.assession.id} %X{jira.request.url} %nlm%n%stf{filteringApplied(false)}</Property>
+        <Property name="IpAddressNonFilteringPattern">%d{yyyy-MM-dd HH:mm:ss,SSSZ} %t %X{jira.username} %X{jira.request.id} %X{jira.request.assession.id} %X{jira.request.ipaddr} %X{jira.request.url} %nlm%n%stf{filteringApplied(false)}</Property>
+        <Property name="JustMessagePattern">%nlm%n%stf{filteringApplied(false)}</Property>
+
+        <Property name="ProfilerPattern">%d | %t | %X{jira.request.id} | %X{jira.username} | %X{jira.request.assession.id}%n%nlm%n%stf{filteringApplied(false)}</Property>
+        <Property name="OutgoingMailPattern">%d{yyyy-MM-dd HH:mm:ss,SSSZ} %p [%X{jira.mailserver}] %t %X{jira.username} %X{jira.request.id} %X{jira.request.assession.id} %X{jira.request.ipaddr} %X{jira.request.url} [%q{2}] %nlm%n%stf{filteringApplied(false)}</Property>
+        <Property name="IncomingMailPattern">%d{yyyy-MM-dd HH:mm:ss,SSSZ} %p [%X{jira.mailserver}] %t %X{jira.username} %X{jira.request.id} %X{jira.request.assession.id} %X{jira.request.ipaddr} %X{jira.request.url} %nlm%n%stf{filteringApplied(false)}</Property>
+        <Property name="ApdexPattern">%d{yyyy-MM-dd HH:mm:ss,SSSZ} %nlm%n%stf{filteringApplied(false)}</Property>
+        <Property name="InProductDiagnosticPattern">%d{yyyy-MM-dd HH:mm:ss,SSSZ} %nlm%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${StackTraceFilteringPattern}</Pattern>
+            </PatternLayout>
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+        <JiraHomeAppender name="filelog"
+                            fileName="atlassian-jira.log"
+                            filePattern="atlassian-jira.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${StackTraceFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="10"/>
+        </JiraHomeAppender>
+        <JiraHomeAppender name="httpaccesslog"
+                            fileName="atlassian-jira-http-access.log"
+                            filePattern="atlassian-jira-http-access.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${NewLineIndentingNotFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+        <JiraHomeAppender name="httpdumplog"
+                            fileName="atlassian-jira-http-dump.log"
+                            filePattern="atlassian-jira-http-dump.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${NewLineIndentingNotFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+        <JiraHomeAppender name="profilerlog"
+                            fileName="atlassian-jira-profiler.log"
+                            filePattern="atlassian-jira-profiler.log.%i">
+            <PatternLayout>
+                <Pattern>${ProfilerPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+        <JiraHomeAppender name="sqllog"
+                            fileName="atlassian-jira-sql.log"
+                            filePattern="atlassian-jira-sql.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${NoLevelNonFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="slowquerylog"
+                            fileName="atlassian-jira-slow-queries.log"
+                            filePattern="atlassian-jira-slow-queries.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${StackTraceFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="querydsllog"
+                            fileName="atlassian-jira-querydsl-sql.log"
+                            filePattern="atlassian-jira-querydsl-sql.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${NoLevelNonFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="slowsqlquerylog"
+                            fileName="atlassian-jira-slow-querydsl-queries.log"
+                            filePattern="atlassian-jira-slow-querydsl-queries.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${NonFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="xsrflog"
+                            fileName="atlassian-jira-xsrf.log"
+                            filePattern="atlassian-jira-xsrf.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${NoLevelNonFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="securitylog"
+                            fileName="atlassian-jira-security.log"
+                            filePattern="atlassian-jira-security.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${IpAddressNonFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="outgoingmaillog"
+                            fileName="atlassian-jira-outgoing-mail.log"
+                            filePattern="atlassian-jira-outgoing-mail.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${OutgoingMailPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="incomingmaillog"
+                            fileName="atlassian-jira-incoming-mail.log"
+                            filePattern="atlassian-jira-incoming-mail.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${IncomingMailPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="remoteappssecurity"
+                            fileName="atlassian-remoteapps-security.log"
+                            filePattern="atlassian-remoteapps-security.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${StackTraceFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="apdexlog"
+                            fileName="atlassian-jira-apdex.log"
+                            filePattern="atlassian-jira-apdex.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${ApdexPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="startupjdbc"
+                            fileName="jdbc-startup.log"
+                            filePattern="jdbc-startup.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${JustMessagePattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="2"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="diagnostics"
+                            fileName="jira-diagnostics.log"
+                            filePattern="jira-diagnostics.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${StackTraceFilteringPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="performance"
+                            fileName="atlassian-jira-perf.log"
+                            filePattern="atlassian-jira-perf.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>%d ${JustMessagePattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="app"
+                            fileName="atlassian-jira-app-monitoring.log"
+                            filePattern="atlassian-jira-app-monitoring.log.%i">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>%d ${JustMessagePattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <JiraHomeAppender name="ipd"
+                            fileName="atlassian-jira-ipd-monitoring.log"
+                            filePattern="atlassian-jira-ipd-monitoring.log.%i">
+            <PatternLayout>
+                <Pattern>${InProductDiagnosticPattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20480 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="min" max="5"/>
+        </JiraHomeAppender>
+
+        <FluentdAppender name="fluentdAppender"
+                        fluentdEndpoint="http://localhost:9880">
+            <AtlassianJsonLayout
+                    filteringApplied="true"
+                    filteredFrames="@jira-filtered-frames.properties"
+                    minimumLines="6"
+                    showEludedSummary="false"
+                    includeLocation="true"/>
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+        </FluentdAppender>
+
+    </Appenders>
+    <Loggers>
+        <Root level="WARN">
+            <AppenderRef ref="filelog"/>
+            <AppenderRef ref="fluentdAppender"/>
+        </Root>
+        <!--        #####################################################-->
+        <!--        # Log Marking-->
+        <!--        #####################################################-->
+        <Logger name="com.atlassian.jira.util.log.LogMarker" level="INFO" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="filelog"/>
+            <AppenderRef ref="httpaccesslog"/>
+            <AppenderRef ref="httpdumplog"/>
+            <AppenderRef ref="sqllog"/>
+            <AppenderRef ref="querydsllog"/>
+            <AppenderRef ref="slowquerylog"/>
+            <AppenderRef ref="slowsqlquerylog"/>
+            <AppenderRef ref="xsrflog"/>
+            <AppenderRef ref="securitylog"/>
+            <AppenderRef ref="outgoingmaillog"/>
+            <AppenderRef ref="incomingmaillog"/>
+            <AppenderRef ref="remoteappssecurity"/>
+            <AppenderRef ref="apdexlog"/>
+        </Logger>
+        <!--        #####################################################-->
+        <!--        # CUSTOM logs-->
+        <!--        #####################################################-->
+        <Logger name="test" level="ERROR" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        #####################################################-->
+        <!--        # Access logs-->
+        <!--        #####################################################-->
+        <Logger name="com.atlassian.jira.web.filters.accesslog.AccessLogFilter" level="OFF" additivity="false">
+            <AppenderRef ref="httpaccesslog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.web.filters.accesslog.AccessLogFilterIncludeImages" level="OFF"
+                additivity="false">
+            <AppenderRef ref="httpaccesslog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.web.filters.accesslog.AccessLogFilterDump" level="OFF" additivity="false">
+            <AppenderRef ref="httpdumplog"/>
+        </Logger>
+        <!--    #####################################################-->
+        <!--    # SQL logs-->
+        <!--    #####################################################-->
+        <!--    #-->
+        <!--    # Beware of turning this log level on.  At INFO level it will log every SQL statement-->
+        <!--    # and at DEBUG level it will also log the calling stack trace.  Turning this on will DEGRADE your-->
+        <!--    # JIRA database throughput.-->
+        <!--    #-->
+        <Logger name="com.atlassian.jira.ofbiz.LoggingSQLInterceptor" level="OFF" additivity="false">
+            <AppenderRef ref="sqllog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.security.xsrf.XsrfVulnerabilityDetectionSQLInterceptor" level="OFF"
+                additivity="false">
+            <AppenderRef ref="xsrflog"/>
+        </Logger>
+        <!--    #####################################################-->
+        <!--    # Security logs-->
+        <!--    #####################################################-->
+        <Logger name="com.atlassian.jira.login.security" level="INFO" additivity="false">
+            <AppenderRef ref="securitylog"/>
+        </Logger>
+
+        <!--        The following log levels can be useful to set when login problems occur within JIRA-->
+        <Logger name="com.atlassian.jira.login" level="WARN" additivity="false">
+            <AppenderRef ref="securitylog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.web.session.currentusers" level="WARN" additivity="false">
+            <AppenderRef ref="securitylog"/>
+        </Logger>
+
+        <!--        BEWARE - Turning on Seraph debug logs will result in many logs lines per web request.-->
+        <Logger name="com.atlassian.seraph" level="WARN" additivity="false">
+            <AppenderRef ref="securitylog"/>
+        </Logger>
+        <Logger name="com.atlassian.seraph.filter.LoginFilter" level="INFO" additivity="false">
+            <AppenderRef ref="securitylog"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # CLASS-SPECIFIC LOGGING LEVELS-->
+        <!--        #####################################################-->
+        <!--        # This stuff you may wish to debug, but it produces a high volume of logs.-->
+        <!--        # Uncomment only if you want to debug something particular-->
+        <Logger name="com.atlassian" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.plugin" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="atlassian.plugin" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="org.twdata.pkgscanner" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.plugin.osgi.factory" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.plugin.osgi.container" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="org.apache.shindig" level="ERROR" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.gadgets" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        # The directory may produce errors of interest to admins when adding gadgets with features that aren't supported-->
+        <!--        # (for example).-->
+        <Logger name="com.atlassian.gadgets.directory" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        # Felix annoyingly dumps some pretty silly INFO level messages. So we have to set logging to WARN here.  Means-->
+        <!--        # we miss out on some useful startup logging.  Should probably remove this if Felix ever fix this.-->
+        <Logger name="com.atlassian.plugin.osgi.container.felix.FelixOsgiContainerManager" level="WARN"
+                additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <Logger name="com.atlassian.plugin.servlet" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.plugin.classloader" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # PluginEnabler spams startup log with 200+ messages about plugins getting enabled-->
+        <Logger name="com.atlassian.plugin.manager.PluginEnabler" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # DevModeBeanInitialisationLoggerBeanPostProcessor spams with shit tonne of boring debug-level messages at WARN-->
+        <Logger name="com.atlassian.plugin.spring.scanner.extension.DevModeBeanInitialisationLoggerBeanPostProcessor"
+                level="ERROR" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.util.system.JiraSystemRestarterImpl" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.upgrade" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.upgrade" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.upgrade.tasks.role" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.startup" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.config.database" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.web.action.util.LDAPConfigurer" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.imports" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.plugin" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.bc.dataimport" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.security" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.issue.index" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.index.LuceneCorruptionChecker" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.index.AccumulatingResultBuilder" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # DefaultIndexManager should run at INFO level, because we want to see messages when we force an optimise etc.-->
+        <Logger name="com.atlassian.jira.issue.index.DefaultIndexManager" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # Allow the Composite IndexLifecycleManager to log info-->
+        <Logger name="com.atlassian.jira.util.index" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.project" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.project.version" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.issue.search.providers" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <Logger name="com.atlassian.jira.issue.search.providers.LuceneSearchProvider_SLOW" level="INFO"
+                additivity="false">
+            <AppenderRef ref="slowquerylog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.issue.search.providers.DbSearchProvider_SLOW" level="INFO" additivity="false">
+            <AppenderRef ref="slowsqlquerylog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.action.admin" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.opensymphony" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.user" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.bc.user" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.workflow" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.service" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.service.services.DebugService" level="DEBUG" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.web.dispatcher.JiraWebworkActionDispatcher" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="webwork" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="webwork.util.ServletValueStack" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="org.ofbiz.core.entity.jdbc.DatabaseUtil" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="org.ofbiz" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.plugin.ext.perforce" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="logMessage.jsp" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.issue.views" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # Project Imports should be logged at INFO level so we can see the steps running.-->
+        <Logger name="com.atlassian.jira.imports.project" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.plugin.userformat.DefaultUserFormats" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.scheduler.JiraSchedulerLauncher" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.sal.jira.scheduling" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="httpclient.wire" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.propertyset.ComponentCachingOfBizPropertyEntryStore" level="INFO"
+                additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # Crowd Embedded-->
+        <!--        #####################################################-->
+
+        <!--        # We want to get INFO level logs about Directory events-->
+        <Logger name="com.atlassian.crowd.directory" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        #####################################################-->
+        <!--        # REST-->
+        <!--        #####################################################-->
+
+        <!--        # only show WARN for WADL generation doclet-->
+        <Logger name="com.atlassian.plugins.rest.doclet" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # JRADEV-12012: suppress irrelevant warnings.-->
+        <Logger name="com.sun.jersey.spi.container.servlet.WebComponent" level="ERROR" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        #####################################################-->
+        <!--        # JQL-->
+        <!--        #####################################################-->
+        <Logger name="com.atlassian.jira.jql" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.jql.resolver" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # UAL-->
+        <!--        #####################################################-->
+
+        <Logger name="com.atlassian.applinks" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # ActiveObjects-->
+        <!--        #####################################################-->
+
+        <Logger name="net.java.ao" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="net.java.ao.sql" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="net.java.ao.DelegateConnectionHandler" level="WARN" additivity="false">
+            <AppenderRef ref="sqllog"/>
+        </Logger>
+        <Logger name="net.java.ao.schema.SchemaGenerator" level="ERROR" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # Long Running Tasks-->
+        <!--        #####################################################-->
+
+        <Logger name="com.atlassian.jira.workflow.migration" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.web.action.admin.index.IndexAdminImpl" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # PROFILING-->
+        <!--        #####################################################-->
+
+        <Logger name="com.atlassian.util.profiling.filters" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.util.profiling" level="DEBUG" additivity="false">
+            <AppenderRef ref="profilerlog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.web.filters.ThreadLocalQueryProfiler" level="DEBUG" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # By default we ignore some usually harmless exception such as Client Abort Exceptions.  However-->
+        <!--        # if this proves problematic then we can turn this to DEBUG log on.-->
+        <Logger name="com.atlassian.jira.web.exception.WebExceptionChecker" level="OFF" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        # Errors in the logs occur at this logger if the user cancels a form upload. The actual exception-->
+        <!--        # is rethrown and dealt with elsewhere so there is no need to keep these logs around.-->
+        <Logger name="webwork.multipart.MultiPartRequestWrapper" level="OFF" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.plugins.monitor" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # Mails-->
+        <!--        #####################################################-->
+
+        <!--        #-->
+        <!--        # outgoing mail log includes also some logging information from classes which handle both incoming and outgoing mails-->
+        <!--        # that's why the appender is configured at com.atlassian.mail level (not com.atlassian.mail.outgoing)-->
+        <!--        #-->
+
+        <Logger name="com.atlassian.mail" level="INFO" additivity="false">
+            <AppenderRef ref="outgoingmaillog"/>
+        </Logger>
+        <Logger name="com.atlassian.mail.incoming" level="INFO" additivity="false">
+            <AppenderRef ref="incomingmaillog"/>
+        </Logger>
+        <!--        # changes in mail settings need to be logged-->
+        <Logger name="com.atlassian.jira.mail.settings.MailSetting" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # Need to ensure that the actual discovery of duplicates is logged-->
+        <Logger name="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build663" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # JRADEV-19240: Suppress useless warnings (will be fixed in atlassian-soy-templates-2.0.0, see SOY-18)-->
+        <Logger name="com.atlassian.soy.impl.GetTextFunction" level="ERROR" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # JRADEV-19613: Remote should log security messages to a separate log file-->
+        <Logger name="com.atlassian.plugin.remotable.plugin.module.oauth.OAuth2LOAuthenticator" level="INFO"
+                additivity="false">
+            <AppenderRef ref="remoteappssecurity"/>
+        </Logger>
+        <Logger name="com.atlassian.plugin.remotable.plugin.module.permission.ApiScopingFilter" level="INFO"
+                additivity="false">
+            <AppenderRef ref="remoteappssecurity"/>
+        </Logger>
+        <Logger name="com.atlassian.plugin.remotable.plugin.OAuthLinkManager" level="INFO"
+                additivity="false">
+            <AppenderRef ref="remoteappssecurity"/>
+        </Logger>
+        <Logger name="com.atlassian.plugin.remotable.plugin.util.http.CachingHttpContentRetriever" level="INFO"
+                additivity="false">
+            <AppenderRef ref="remoteappssecurity"/>
+        </Logger>
+        <Logger name="com.atlassian.plugin.remotable.plugin.service.LocalSignedRequestHandler" level="INFO"
+                additivity="false">
+            <AppenderRef ref="remoteappssecurity"/>
+        </Logger>
+
+        <Logger name="com.atlassian.jira.web.bean.BackingI18n" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.studio.jira.homepage.CloudHomepageFilter" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        # Suppress excessive config warnings from EHCACHE-->
+        <Logger name="net.sf.ehcache.config.CacheConfiguration" level="ERROR" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # This one so it is in the UI and can be set-->
+        <Logger name="net.sf.ehcache.distribution" level="ERROR" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.cluster.cache.ehcache.BlockingParallelCacheReplicator" level="WARN"
+                additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        # Asynchronous EHCACHE replication logging-->
+        <!--        # when set to DEBUG produces similar logs to BlockingParallelCacheReplicator-->
+        <Logger name="com.atlassian.jira.cluster.distribution.localq.LocalQCacheReplicator" level="INFO"
+                additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # on INFO logs queue stats per node, on DEBUG logs queue stats per queue-->
+        <Logger name="com.atlassian.jira.cluster.distribution.localq.LocalQCacheManager" level="INFO"
+                additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        # Cluster Authentication stats-->
+        <Logger name="com.atlassian.jira.cluster.distribution.localq.rmi.auth.ClusterAuthStatsManager" level="INFO"
+                additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        # Decryption of the DB password-->
+        <Logger name="com.atlassian.db.config.password" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+            <AppenderRef ref="console"/>
+        </Logger>
+        <!--        # Logging cache flush events for ALL caches; stacktraces must still be enabled manually.-->
+        <Logger name="com.atlassian.cache.event" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.cache.stacktrace" level="OFF" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <!--        # Added to give more information on AO startup-->
+        <Logger name="com.atlassian.activeobjects.osgi" level="DEBUG" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="jdbc.startup.log" level="INFO" additivity="false">
+            <AppenderRef ref="startupjdbc"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # Apdex logs-->
+        <!--        #####################################################-->
+        <!--        #-->
+        <Logger name="com.atlassian.jira.apdex.impl.SendAnalyticsJobRunner" level="INFO" additivity="false">
+            <AppenderRef ref="apdexlog"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # App Diagnostics-->
+        <!--        #####################################################-->
+        <Logger name="atlassian-diagnostics" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="atlassian-diagnostics-data-logger" level="INFO" additivity="false">
+            <AppenderRef ref="diagnostics"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # App Diagnostics - performance metrics logging-->
+        <!--        #####################################################-->
+        <Logger name="atlassian-performance" level="WARN" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="atlassian-performance-data-logger" level="INFO" additivity="false">
+            <AppenderRef ref="performance"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # App Diagnostics - app monitoring logging-->
+        <!--        #####################################################-->
+        <Logger name="app-monitoring" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="app-monitoring-data-logger" level="INFO" additivity="false">
+            <AppenderRef ref="app"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # Rate Limiting-->
+        <!--        #####################################################-->
+        <Logger name="com.atlassian.ratelimiting" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+            <AppenderRef ref="console"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # Index replay and DBR-->
+        <!--        #####################################################-->
+        <Logger name="com.atlassian.jira.index.ha.DefaultNodeReindexService" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.cluster.dbr" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.cluster.distribution.localq" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.index.WriterWrapper" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.index.DefaultIndexEngine" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # Startup index fetching-->
+        <!--        #####################################################-->
+        <Logger name="com.atlassian.jira.cluster.DefaultClusterManager" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="com.atlassian.jira.cluster.DefaultIndexFetcher" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+
+        <!--        #####################################################-->
+        <!--        # In-product diagnostics monitoring logging-->
+        <!--        #####################################################-->
+        <Logger name="ipd-monitoring" level="INFO" additivity="false">
+            <AppenderRef ref="filelog"/>
+        </Logger>
+        <Logger name="ipd-monitoring-data-logger" level="INFO" additivity="false">
+            <AppenderRef ref="ipd"/>
+        </Logger>
+    </Loggers>
+</Configuration>
